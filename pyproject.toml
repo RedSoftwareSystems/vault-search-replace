@@ -18,3 +18,7 @@ vault-search-replace = "vault_search_replace:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+
+[tool.ruff.lint]
+select = []

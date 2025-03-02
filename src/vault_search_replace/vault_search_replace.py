@@ -2,6 +2,7 @@ import sys
 
 import hvac
 import typer
+from typing import Annotated, Optional, List
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -57,6 +58,20 @@ def find_string(client: hvac.Client, entry: str, string_to_match: str) -> bool:
     return False
 
 
+def find_string(client: hvac.Client, entry: str, string_to_match: str) -> bool:
+    logger.debug(f"Requested KEY is :{entry}")
+    data = client.secrets.kv.v2.read_secret(path=entry)["data"]
+    logger.debug(f"Data --> {data}")
+
+    elements_list = data["data"].values()
+
+    for element in elements_list:
+        if str(element).find(string_to_match) > -1:
+            logger.debug(element)
+            return True
+    return False
+
+
 def verify_key(client: hvac.Client, entry: str, string_to_match: str) -> bool:
     return False
 
@@ -86,16 +101,31 @@ def search(
             print(f"Found {entry}")
 
 
-@app.command()
-def replace(
-    string_to_search: str,
-    string_to_replace: str,
-    vault_namespace: str = "",
-    vault_base_url: str = "",
-    vault_access_token: str = "",
+def main(
+    string_to_search: Annotated[str, typer.Argument(help="String to Search")],
+    vault_namespace: Annotated[str, typer.Argument(help="Vault Namespace")],
+    vault_base_url: Annotated[str, typer.Argument(help="Vault Base url to Search")],
+    vault_access_token: Annotated[str, typer.Argument(help="Vault Access Token")],
+    replacement_string: Annotated[
+        Optional[str], typer.Argument(help="String to Replace")
+    ] = None,
+    no_dry_run: Annotated[
+        bool, typer.Option(help="No Dry Run - Execute the Change")
+    ] = False,
 ):
-    print(f"Hello {string_to_search} {string_to_replace}")
+    """
+    This command allows for a search (and eventual replace) of strings within an hashicorp vault namespace.
+
+    :param string_to_search: The string you are looking for
+    :param replacement_string: Replacement String
+    :param vault_namespace: Vault namespace (if empty, VAULT_NAMESPACE env variable will be used)
+    :param vault_base_url:
+    :param vault_access_token:
+    :param no_dry_run:
+    :return:
+    """
 
 
 if __name__ == "__main__":
+    typer.run(main)
     app()

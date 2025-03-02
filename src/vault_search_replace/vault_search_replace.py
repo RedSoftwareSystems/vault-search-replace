@@ -47,14 +47,12 @@ def find_string(client: hvac.Client, entry: str, string_to_match: str) -> bool:
 
     elements_list = data["data"]
 
-    for element in elements_list:
-        if (
-            str(element).find(string_to_match) > -1
-            or (str(elements_list.get(element))).find(string_to_match) > -1
-            or entry.find(string_to_match) > -1
-        ):
-            return True
-    return False
+    return any(
+        string_to_match in str(element)
+        or string_to_match in (str(elements_list.get(element)))
+        or string_to_match in entry
+        for element in elements_list
+    )
 
 
 def verify_key(client: hvac.Client, entry: str, string_to_match: str) -> bool:

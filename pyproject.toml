@@ -8,6 +8,7 @@ dependencies = [
     "click>=8.1.7",
     "hvac>=2.3.0",
     "loguru>=0.7.2",
+    "python-dotenv>=1.0.1",
     "ruff>=0.6.9",
     "typer>=0.12.5",
 ]
@@ -18,3 +19,7 @@ vault-search-replace = "vault_search_replace:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+
+[tool.ruff.lint]
+select = []

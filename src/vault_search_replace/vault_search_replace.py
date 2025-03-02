@@ -128,13 +128,14 @@ def main(
     logger.info(global_path_list)
 
     recursive_list = recursive_list_keys(global_key_list, client=client, path="")
-    result_list = list()
 
-    for entry in recursive_list:
-        if find_string(client=client, entry=entry, string_to_match=string_to_search):
-            result_list.append(entry)
+    result_list = [
+        entry
+        for entry in recursive_list
+        if find_string(client=client, entry=entry, string_to_match=string_to_search)
+    ]
 
-    if len(result_list) > 0:
+    if result_list:
         print(
             f"Search Key {string_to_search} has been found in:\n{'\n'.join(result_list)}"
         )

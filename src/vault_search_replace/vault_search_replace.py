@@ -5,6 +5,8 @@ import typer
 from typing import Annotated, Optional, List
 from dotenv import load_dotenv
 from loguru import logger
+import requests
+import json
 
 logger.remove()
 logger.add(sys.stderr, level="INFO")
@@ -72,33 +74,27 @@ def find_string(client: hvac.Client, entry: str, string_to_match: str) -> bool:
     return False
 
 
-def verify_key(client: hvac.Client, entry: str, string_to_match: str) -> bool:
-    return False
-
-
-@app.command()
-def search(
-    string_to_search: str,
-    vault_namespace: str = "",
-    vault_base_url: str = "",
-    vault_access_token: str = "",
+def replace_in_list(
+    list_of_vaults: List,
+    search_string: str,
+    replace_string: str,
+    vault_base_url,
+    vault_access_token,
 ):
-    global_key_list = []
+    headers = {"X-Vault-Token": vault_access_token}
 
-    client = hvac.Client(
-        url=vault_base_url, namespace=vault_namespace, token=vault_access_token
-    )
+    for vault in list_of_vaults:
+        vault_url = f"{vault_base_url}/v1/adeo/cdp/oreo/secret/data/{vault}"
+        response = requests.get(vault_url, headers=headers)
 
-    list_response = client.secrets.kv.v2.list_secrets(
-        path="",
-    )
-    global_path_list = list_response["data"]["keys"]
+        response_text = response.text
 
-    recursive_list = recursive_list_keys(global_key_list, client=client, path="")
-
-    for entry in recursive_list:
-        if find_string(client=client, entry=entry, string_to_match=string_to_search):
-            print(f"Found {entry}")
+        if response_text.find(search_string) > 0:
+            print(f"Vault {vault} will be modified")
+            newdata = response_text.replace(search_string, replace_string)
+            response_dict = json.loads(newdata)
+            data = response_dict["data"]
+            post_response = requests.post(vault_url, headers=headers, json=data)
 
 
 def main(
@@ -116,14 +112,45 @@ def main(
     """
     This command allows for a search (and eventual replace) of strings within an hashicorp vault namespace.
 
-    :param string_to_search: The string you are looking for
-    :param replacement_string: Replacement String
-    :param vault_namespace: Vault namespace (if empty, VAULT_NAMESPACE env variable will be used)
-    :param vault_base_url:
-    :param vault_access_token:
-    :param no_dry_run:
-    :return:
+
     """
+    global_key_list = []
+
+    client = hvac.Client(
+        url=vault_base_url, namespace=vault_namespace, token=vault_access_token
+    )
+
+    logger.info(client.is_authenticated())
+    list_response = client.secrets.kv.v2.list_secrets(
+        path="",
+    )
+
+    global_path_list = list_response["data"]["keys"]
+
+    logger.info(global_path_list)
+
+    recursive_list = recursive_list_keys(global_key_list, client=client, path="")
+    result_list = list()
+
+    for entry in recursive_list:
+        if find_string(client=client, entry=entry, string_to_match=string_to_search):
+            result_list.append(entry)
+
+    if len(result_list) > 0:
+        print(
+            f"Search Key {string_to_search} has been found in:\n{'\n'.join(result_list)}"
+        )
+    else:
+        print(f"Search Key {string_to_search} not found")
+
+    if replacement_string != "" and no_dry_run:
+        replace_in_list(
+            result_list,
+            string_to_search,
+            replacement_string,
+            vault_base_url,
+            vault_access_token,
+        )
 
 
 if __name__ == "__main__":

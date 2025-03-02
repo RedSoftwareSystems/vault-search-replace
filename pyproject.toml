@@ -3,7 +3,7 @@ name = "vault-search-replace"
 version = "0.1.0"
 description = "A simple search and replace command line utility for Hashicorp Vault"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "click>=8.1.7",
     "hvac>=2.3.0",

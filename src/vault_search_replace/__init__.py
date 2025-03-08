@@ -1,2 +1,1 @@
-def main() -> None:
-    print("Hello from vault-search-replace!")
+from .vault_search_replace import app

@@ -22,10 +22,22 @@ vault_search_replace.py [OPTIONS]
                       VAULT_ACCESS_TOKEN
                       [REPLACEMENT_STRING]
 ```
-Where
- * STRING_TO_SEARCH is the string to be searched
- * VAULT_NAMESPACE is the vault namespace to be searched
- * VAULT_BASE_URL is the vault address
- * VAULT_ACCESS_TOKEN is the vault token 
- * REPLACEMENT_STRING (optional) is the string to replace the searched string
- * the only OPTION is --no-dry-run to confirm the replacement of the string (default is that the string is not replaced)
+### Command Line Parameters:
+
+#### Required:
+string_to_search
+vault_namespace
+vault_base_url
+vault_access_token
+
+#### Optional
+string_to_replace
+
+#### Options
+--no-dry-run - confirm the execution
+
+Without the (optional) replace_string argument, the command will execute a (string) search for _search_string_.
+With the replace argument, the command will execute a **dry-run** of the replace operation (no change will be applied). To force the creation of new secrets
+versions, the **--no-dry-run** option has to be passed.
+
+As of this release, the search is very simple (python **str.find** function). 

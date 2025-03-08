@@ -95,7 +95,8 @@ def replace_in_list(
             post_response = requests.post(vault_url, headers=headers, json=data)
 
 
-def main(
+@app.command()
+def main_command(
     string_to_search: Annotated[str, typer.Argument(help="String to Search")],
     vault_namespace: Annotated[str, typer.Argument(help="Vault Namespace")],
     vault_base_url: Annotated[str, typer.Argument(help="Vault Base url to Search")],
@@ -150,8 +151,3 @@ def main(
             vault_base_url,
             vault_access_token,
         )
-
-
-if __name__ == "__main__":
-    typer.run(main)
-    app()

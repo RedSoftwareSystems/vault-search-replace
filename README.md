@@ -37,7 +37,6 @@ string_to_replace
 --no-dry-run - confirm the execution
 
 Without the (optional) replace_string argument, the command will execute a (string) search for _search_string_.
-With the replace argument, the command will execute a **dry-run** of the replace operation (no change will be applied). To force the creation of new secrets
-versions, the **--no-dry-run** option has to be passed.
+With the replace argument, the command always creates a new secret version. By default, it performs a dry-run—showing the changes without applying them. To actually apply the changes to the secrets, the **--no-dry-run** option must be passed.
 
 As of this release, the search is very simple (python **str.find** function). 

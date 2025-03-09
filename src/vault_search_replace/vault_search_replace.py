@@ -11,7 +11,11 @@ import json
 logger.remove()
 logger.add(sys.stderr, level="INFO")
 
-app = typer.Typer()
+app = typer.Typer(
+    name="vault-search-replace",
+    add_completion=False,
+    help="An utility to search and replace Vault secrets.",
+)
 
 load_dotenv(verbose=True)
 
@@ -95,7 +99,8 @@ def replace_in_list(
             post_response = requests.post(vault_url, headers=headers, json=data)
 
 
-def main(
+@app.command()
+def main_command(
     string_to_search: Annotated[str, typer.Argument(help="String to Search")],
     vault_namespace: Annotated[str, typer.Argument(help="Vault Namespace")],
     vault_base_url: Annotated[str, typer.Argument(help="Vault Base url to Search")],
@@ -104,7 +109,7 @@ def main(
         Optional[str], typer.Argument(help="String to Replace")
     ] = None,
     no_dry_run: Annotated[
-        bool, typer.Option(help="No Dry Run - Execute the Change")
+        bool, typer.Option(help="No Dry Run - Execute the Change", is_flag=True)
     ] = False,
 ):
     """
@@ -150,8 +155,3 @@ def main(
             vault_base_url,
             vault_access_token,
         )
-
-
-if __name__ == "__main__":
-    typer.run(main)
-    app()

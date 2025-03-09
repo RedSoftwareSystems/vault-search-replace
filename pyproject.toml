@@ -1,6 +1,6 @@
 [project]
 name = "vault-search-replace"
-version = "0.1.0"
+version = "0.1.2"
 description = "A simple search and replace command line utility for Hashicorp Vault"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-vault-search-replace = "vault_search_replace:main"
+vault-search-replace = "vault_search_replace:app"
 
 [build-system]
 requires = ["hatchling"]

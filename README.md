@@ -6,9 +6,9 @@ Recently, I have come across the fact that no API allows to simply search for **
 The specific use case I am working on is to change database connection strings for java based microservices.
 
 ## Running the script
-Best option is to install [uv](https://docs.astral.sh/uv/) and run the script with:
+Best option is to install [uv](https://docs.astral.sh/uv/). After that you can run the script with 
 
-`uv run vault_search_replace.py`
+`uv tool vault_search_replace.py`
 
 The script has [inline metadata](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies) and will run without installation.
 

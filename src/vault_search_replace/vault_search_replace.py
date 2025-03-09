@@ -11,7 +11,11 @@ import json
 logger.remove()
 logger.add(sys.stderr, level="INFO")
 
-app = typer.Typer()
+app = typer.Typer(
+    name="vault-search-replace",
+    add_completion=False,
+    help="An utility to search and replace Vault secrets.",
+)
 
 load_dotenv(verbose=True)
 
@@ -105,7 +109,7 @@ def main_command(
         Optional[str], typer.Argument(help="String to Replace")
     ] = None,
     no_dry_run: Annotated[
-        bool, typer.Option(help="No Dry Run - Execute the Change")
+        bool, typer.Option(help="No Dry Run - Execute the Change", is_flag=True)
     ] = False,
 ):
     """

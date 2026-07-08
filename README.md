@@ -15,7 +15,7 @@ The script has [inline metadata](https://docs.astral.sh/uv/guides/scripts/#decla
 ## Usage
 
 ```shell
-vault_search_replace.py [OPTIONS] 
+main.py [OPTIONS] 
                       STRING_TO_SEARCH 
                       VAULT_NAMESPACE
                       VAULT_BASE_URL 

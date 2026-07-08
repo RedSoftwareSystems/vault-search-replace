@@ -8,6 +8,13 @@ from loguru import logger
 import requests
 import json
 
+from importlib.metadata import version
+
+__version__ = version("vault-search-replace")
+
+print(f"Vault Search Replace v{__version__}")
+
+
 logger.remove()
 logger.add(sys.stderr, level="INFO")
 
